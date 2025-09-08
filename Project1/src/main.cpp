@@ -1,4 +1,7 @@
 #include <Arduino.h>
+#include <LiquidCrystal_I2C.h>
+#include <Wire.h>
+LiquidCrystal_I2C lcd(0x27, 16, 2);
 #define CRANKSHAFT_SENSOR_PIN 8
 #define IGNITION_PIN 9
 #define POT_VALUE A1
@@ -106,7 +109,8 @@ ISR(TIMER2_COMPA_vect) {
 }
 
 void setup() {
-    Serial.begin(115200);
+     lcd.init();
+    lcd.backlight();
     pinMode(CRANKSHAFT_SENSOR_PIN, INPUT);
     pinMode(IGNITION_PIN, OUTPUT);
     pinMode(POT_VALUE, INPUT);
@@ -156,13 +160,18 @@ void loop() {
   
   if (display_flag) {
         display_flag = 0;
-        Serial.print("n1: "); Serial.print(n1);
-        Serial.print(" | n2: "); Serial.print(n2);
-        Serial.print(" | delay_final_ticks: "); Serial.print(delay_final_ticks);
-        Serial.print(" | THETA_DELAY: "); Serial.print(THETA_DELAY);
-        Serial.print(" | delta_N: "); Serial.print(delta_N);
-        Serial.print(" | N_delay: "); Serial.print(N_delay);
-        Serial.print(" | Speed: "); Serial.print(Speed); Serial.println(" RPM");
-        Serial.println("----------------------");
+        lcd.clear();
+        lcd.setCursor(0,0);
+        lcd.print("Freq:"); 
+        lcd.setCursor(5,0);
+        lcd.print(f, 2);
+        lcd.setCursor(8,0);
+        lcd.print(" Hz"); 
+        lcd.setCursor(0,1);
+        lcd.print("Speed:"); 
+        lcd.setCursor(6,1);
+        lcd.print(Speed, 2);
+        lcd.setCursor(12,1); 
+        lcd.print(" RPM");
     }
 }
